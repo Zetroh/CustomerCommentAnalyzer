@@ -31,11 +31,13 @@ public class Main {
 	 * @param target the target map
 	 */
 	private static void addReportResults(Map<String, Integer> source, Map<String, Integer> target) {
-
 		for (Map.Entry<String, Integer> entry : source.entrySet()) {
-			target.put(entry.getKey(), entry.getValue());
+			if (target.containsKey(entry.getKey()) == false) {
+				target.put(entry.getKey(), entry.getValue());
+			} else {
+				int currentTargetValue = target.get(entry.getKey());
+				target.put(entry.getKey(), entry.getValue() + currentTargetValue);
+			}
 		}
-		
 	}
-
 }

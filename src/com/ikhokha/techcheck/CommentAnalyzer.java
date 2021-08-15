@@ -25,18 +25,18 @@ public class CommentAnalyzer {
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 				
-				if (line.length() < 15) {
-					
-					incOccurrence(resultsMap, "SHORTER_THAN_15");
-
-				} else if (line.contains("Mover")) {
-
-					incOccurrence(resultsMap, "MOVER_MENTIONS");
+				if (numberOfCharacters(line) < 15) {
+					incrementOccurrence(resultsMap, "SHORTER_THAN_15", 1);
+				} 
 				
-				} else if (line.contains("Shaker")) {
-
-					incOccurrence(resultsMap, "SHAKER_MENTIONS");
+				int moverMentions = numberOfOccurences(line, "mover");
+				if (moverMentions > 0) {
+					incrementOccurrence(resultsMap, "MOVER_MENTIONS", moverMentions);
+				} 
 				
+				int shakerMentions = numberOfOccurences(line, "shaker");
+				if (shakerMentions > 0) {
+					incrementOccurrence(resultsMap, "SHAKER_MENTIONS", shakerMentions);
 				}
 			}
 			
@@ -53,14 +53,35 @@ public class CommentAnalyzer {
 	}
 	
 	/**
-	 * This method increments a counter by 1 for a match type on the countMap. Uninitialized keys will be set to 1
+	 * This method increments a counter by a given number of occurences for a match type on the countMap. Uninitialized keys will be set to 1
 	 * @param countMap the map that keeps track of counts
 	 * @param key the key for the value to increment
+	 * @param numberOfOccurences the actual number to increment counter
 	 */
-	private void incOccurrence(Map<String, Integer> countMap, String key) {
+	private void incrementOccurrence(Map<String, Integer> countMap, String key, int numberOfOccurences) {
 		
 		countMap.putIfAbsent(key, 0);
-		countMap.put(key, countMap.get(key) + 1);
+		countMap.put(key, countMap.get(key) + numberOfOccurences);
 	}
 
+	private int numberOfCharacters(String line) {
+		int count = 0;
+		for (int i = 0; i < line.length(); i++) {
+			if(line.charAt(i) != ' ')    
+			count++;  
+		}
+		return count;
+	}
+
+	private int numberOfOccurences(String line, String occurenceText) {
+		int count = 0;
+		String words[] = line.split(" ");
+		for (int i = 0; i < words.length; i++) {
+			if(words[i].toLowerCase().contains(occurenceText))    
+			{
+				count++;  
+			}
+		}
+		return count;
+	}
 }
