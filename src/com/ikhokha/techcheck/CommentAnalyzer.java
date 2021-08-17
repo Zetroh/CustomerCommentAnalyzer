@@ -6,8 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Map;
+import java.util.function.Supplier;
 
-public class CommentAnalyzer {
+public class CommentAnalyzer implements Supplier<Map<String, Integer>> {
 	
 	private File file;
 	
@@ -15,7 +16,7 @@ public class CommentAnalyzer {
 		this.file = file;
 	}
 	
-	public Map<String, Integer> analyze() {
+	public Map<String, Integer> analyze() throws InterruptedException {
 		ShortComment shortComment = new ShortComment();
 		Mover mover = new Mover();
 		Shaker shaker = new Shaker();
@@ -47,5 +48,15 @@ public class CommentAnalyzer {
 			"QUESTIONS", question.getCount(),
 			"SPAM", spam.getCount()
 			);	
+	}
+
+	@Override
+	public Map<String, Integer> get() {
+		try {
+			return analyze();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return Map.of();
 	}
 }
